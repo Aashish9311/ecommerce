@@ -1,0 +1,53 @@
+<!-- templates/accounts/profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}My Profile - E-commerce Store{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="card-title">Account Information</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Phone:</strong> {{ user.phone_number }}</p>
+                <p><strong>Account Type:</strong> {{ user.get_role_display }}</p>
+                <p><strong>MFA Status:</strong> {% if user.mfa_enabled %}Enabled{% else %}Disabled{% endif %}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Security Settings</h4>
+            </div>
+            <div class="card-body">
+                <h5>Two-Factor Authentication</h5>
+                <p>Enhance your account security by enabling two-factor authentication.</p>
+                
+                {% if user.mfa_enabled %}
+                    <form method="post" action="{% url 'disable_mfa' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Disable Two-Factor Authentication</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'enable_mfa' %}" class="btn btn-success">Enable Two-Factor Authentication</a>
+                {% endif %}
+                
+                <hr>
+                
+                <h5>Change Password</h5>
+                <p>It's a good idea to use a strong password that you don't use elsewhere.</p>
+                <a href="{% url 'change_password' %}" class="btn btn-primary">Change Password</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

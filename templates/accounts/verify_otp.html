@@ -1,0 +1,44 @@
+<!-- templates/accounts/verify_otp.html -->
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP - E-commerce Store{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title text-center">Two-Factor Authentication</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p>An OTP has been sent to your email address. Please enter it below to complete the login process.</p>
+                </div>
+                
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_otp_code" class="form-label">OTP Code</label>
+                        <input type="text" name="otp_code" id="id_otp_code" class="form-control {% if form.otp_code.errors %}is-invalid{% endif %}" autofocus>
+                        {% if form.otp_code.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.otp_code.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Verify</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'login' %}">Back to Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

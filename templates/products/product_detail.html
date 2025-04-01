@@ -1,0 +1,60 @@
+<!-- templates/products/product_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - E-commerce Store{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid rounded product-detail-img" alt="{{ product.name }}">
+        {% else %}
+            <img src="https://via.placeholder.com/600x400?text=No+Image" class="img-fluid rounded product-detail-img" alt="No Image">
+        {% endif %}
+    </div>
+    
+    <div class="col-md-6">
+        <h1 class="mb-3">{{ product.name }}</h1>
+        <p class="fs-4 fw-bold text-primary mb-3">${{ product.price }}</p>
+        
+        <div class="mb-4">
+            <p class="mb-1"><strong>Availability:</strong> 
+                {% if product.stock > 0 %}
+                    <span class="text-success">In Stock ({{ product.stock }} available)</span>
+                {% else %}
+                    <span class="text-danger">Out of Stock</span>
+                {% endif %}
+            </p>
+            <p class="mb-1"><strong>Seller:</strong> {{ product.seller.username }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <h5>Description</h5>
+            <p>{{ product.description }}</p>
+        </div>
+        
+        {% if user.is_authenticated and user.is_buyer %}
+            <form method="post" action="{% url 'add_to_cart' product.id %}" class="mb-4">
+                {% csrf_token %}
+                <div class="row g-3 align-items-center">
+                    <div class="col-auto">
+                        <label for="quantity" class="col-form-label">Quantity:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary" {% if product.stock <= 0 %}disabled{% endif %}>
+                            {% if product.stock <= 0 %}Out of Stock{% else %}Add to Cart{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+        
+        <div class="d-grid gap-2 d-md-block">
+            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">Back to Products</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
